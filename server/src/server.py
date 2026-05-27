@@ -16,6 +16,7 @@ import logging
 import os
 import random
 import time
+from contextlib import asynccontextmanager
 from typing import Any, Dict, Optional
 from dotenv import load_dotenv
 
@@ -76,11 +77,23 @@ except ValueError as e:
     agent = None
 
 
+# Initialize DB on FastAPI startup (lifespan)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        init_db()
+        logger.info("SQLite database initialized and seeded successfully.")
+    except Exception as e:
+        logger.exception("Failed to initialize SQLite database on startup: %s", e)
+    yield
+
+
 # FastAPI application
 app = FastAPI(
     title="Agora Agent & Token Service",
     version="2.0.0",
     description="Agora Conversational AI service",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -361,16 +374,6 @@ async def agent_webhook(request: Dict[str, Any], background_tasks: BackgroundTas
     if agent_id:
         background_tasks.add_task(process_call_summary, agent_id)
     return {"code": 0, "msg": "success"}
-
-
-# Initialize DB on FastAPI startup
-@app.on_event("startup")
-def startup_event():
-    try:
-        init_db()
-        logger.info("SQLite database initialized and seeded successfully.")
-    except Exception as e:
-        logger.exception("Failed to initialize SQLite database on startup: %s", e)
 
 
 app.include_router(router)
