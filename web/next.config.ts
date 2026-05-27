@@ -32,6 +32,26 @@ const nextConfig: NextConfig = {
         source: '/api/stopAgent',
         destination: `${backendUrl}/stopAgent`,
       },
+      {
+        source: '/api/inventory',
+        destination: `${backendUrl}/api/inventory`,
+      },
+      {
+        source: '/api/leads',
+        destination: `${backendUrl}/api/leads`,
+      },
+      {
+        source: '/api/calls',
+        destination: `${backendUrl}/api/calls`,
+      },
+      {
+        source: '/api/webhook/agent',
+        destination: `${backendUrl}/api/webhook/agent`,
+      },
+      {
+        source: '/api/inventory_status',
+        destination: `${backendUrl}/api/inventory/status`,
+      },
     ]
   },
 }

@@ -92,6 +92,33 @@ def init_db():
     conn.close()
 
 # Database CRUD helpers
+def add_car(car_data: Dict[str, Any]) -> int:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    INSERT INTO cars (make, model, year, color, mileage, transmission, fuel_type, condition, asking_price, floor_price, location, registration_expiry, accident_free, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        car_data["make"],
+        car_data["model"],
+        car_data["year"],
+        car_data["color"],
+        car_data["mileage"],
+        car_data["transmission"],
+        car_data["fuel_type"],
+        car_data["condition"],
+        car_data["asking_price"],
+        car_data["floor_price"],
+        car_data["location"],
+        car_data["registration_expiry"],
+        car_data["accident_free"],
+        car_data.get("status", "available")
+    ))
+    conn.commit()
+    car_id = cursor.lastrowid
+    conn.close()
+    return car_id
+
 def get_all_cars() -> List[Dict[str, Any]]:
     conn = get_db_connection()
     cursor = conn.cursor()
