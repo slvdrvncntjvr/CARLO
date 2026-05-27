@@ -52,14 +52,14 @@ class Agent:
         if not self.app_id or not self.app_certificate:
             raise ValueError("AGORA_APP_ID and AGORA_APP_CERTIFICATE are required")
 
-        # customer_key + customer_secret are required for REST APIs like get_history
+        # customer_id + customer_secret are required for REST APIs like get_history
         client_kwargs: Dict[str, Any] = {
             "area": Area.US,
             "app_id": self.app_id,
             "app_certificate": self.app_certificate,
         }
         if self.customer_key and self.customer_secret:
-            client_kwargs["customer_key"] = self.customer_key
+            client_kwargs["customer_id"] = self.customer_key
             client_kwargs["customer_secret"] = self.customer_secret
         self.client = AsyncAgora(**client_kwargs)
 
